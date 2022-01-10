@@ -33,8 +33,8 @@ class Board:
         Fill in the list to create a tic-tac-toe board.  
         
         Args:    
-        self (instance): Represents the class instance.
-            We can access the attributes and methods of the class in python.  
+            self (instance): Represents the class instance.
+                We can access the attributes and methods of the class in python.  
         """
         for row in range(3):
             self.board.append(["-", "-", '-'])
