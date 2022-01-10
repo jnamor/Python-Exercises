@@ -1,12 +1,16 @@
 ## -- TODO --
-## Ajouter un mode ordinateur
-## Ajouter une identification automatique de victoire/défaite
-# Enlever la répétition (DRY)
+# Ajouter un mode ordinateur DONE
+# Ajouter une identification automatique de victoire/défaite DONE
+# Enlever la répétition DONE
+# Vérifier les noms de variables, listes, etc.
 # Commenter le code
 
 import random
 
 class Board:
+    list_of_element = ['X', 'O']
+    list_of_possible_numbers = [11, 12, 13, 21, 22, 23, 31, 32, 33]
+
     def __init__(self):
         self.board = []
     
@@ -14,30 +18,24 @@ class Board:
         for row in range(3):
             self.board.append(["-", "-", '-'])
     
-    def insert_values(self, element):                                                           # REPEAT                                       
+    def players_turn(self, element):
         print(f"Player {element} turn")
         for i in self.board:
-            print(*i, sep=" ")  
-
-        response = [int(i) for i in input("Enter row and column numbers to fix spot: ")]
-        while len(response) != 2:
-            response = [int(i) for i in input("Please, enter only row and column numbers: ")]
-
-        row = response[0] - 1
-        line = response[1] - 1
-
-
-        return row, line
+            print(*i, sep=" ")
     
-    def insert_values_from_robot(self, element):                                                # REPEAT
-        print(f"Player {element} turn")
-        for i in self.board:
-            print(*i, sep=" ")  
+    def insert_values(self, element):
+        if element == 'X':
+            response = [int(i) for i in input("Enter row and column numbers to fix spot: ")]
+            while len(response) != 2:
+                response = [int(i) for i in input("Please, enter only row and column numbers: ")]
+        else:
+            response = [int(i) for i in str(random.choice(Board.list_of_possible_numbers))]
 
-        list_of_possible_numbers = [11, 12, 13, 21, 22, 23, 31, 32, 33]
-        response = [int(i) for i in str(random.choice(list_of_possible_numbers))]
-        row = response[0] - 1
-        line = response[1] - 1
+        row, line = response[0] - 1, response[1] - 1
+        
+        while self.board[row][line] in Board.list_of_element:
+            print("This location is already taken.")
+            row, line = self.insert_values(element)
 
         return row, line
 
@@ -63,45 +61,23 @@ class Board:
                 except IndexError:
                     pass
             
-        if win == 'X' or win == 'O':
+        if win in Board.list_of_element:
             return True
 
     def player(self):
         self.create_board()
 
-        while self.is_player_win() != True:                                                     # REPEAT
-            element = 'X'
-            row, line = self.insert_values(element)                                             # REPEAT
-
-            while self.board[row][line] == 'O' or self.board[row][line] == 'X':                 # REPEAT
-                print("This location is already taken.")                                        # REPEAT
-
-                row, line = self.insert_values(element)                                         # REPEAT
-
-            self.board[row][line] = element                                                     # REPEAT
-            
-            if self.is_player_win() == True:                                                    # REPEAT
-                for i in self.board: print(*i, sep=" ")                                         # REPEAT                   
-                break                                                                           # REPEAT
-
-            # ------------------
-
-            element = 'O'
-            row, line = self.insert_values_from_robot(element)                                  # REPEAT
-
-            while self.board[row][line] == 'O' or self.board[row][line] == 'X':                 # REPEAT
-                print("This location is already taken.")                                        # REPEAT
-
-                row, line = self.insert_values_from_robot(element)                              # REPEAT
-
-            self.board[row][line] = element                                                     # REPEAT
-
-            if self.is_player_win() == True:                                                    # REPEAT
-                for i in self.board: print(*i, sep=" ")                                         # REPEAT                   
-                break                                                                           # REPEAT
+        while self.is_player_win() != True:
+            for element in Board.list_of_element:
+                self.players_turn(element)
+                row, line = self.insert_values(element)
+                self.board[row][line] = element
+                    
+                if self.is_player_win() == True:
+                    for i in self.board: print(*i, sep=" ")                  
+                    break
         
-        print(f"\nCongratulations! The player {element} wins")    
-
+        print(f"\nCongratulations! The player {element} wins")
 
 tableau = Board()
 tableau.player()
