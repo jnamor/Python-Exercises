@@ -2,14 +2,14 @@
 # Ajouter un mode ordinateur DONE
 # Ajouter une identification automatique de victoire/défaite DONE
 # Enlever la répétition DONE
-# Vérifier les noms de variables, listes, etc.
+# Vérifier les noms de variables, listes, etc. DONE
 # Commenter le code
 
 import random
 
 class Board:
-    list_of_element = ['X', 'O']
-    list_of_possible_numbers = [11, 12, 13, 21, 22, 23, 31, 32, 33]
+    LIST_OF_ELEMENT = ['X', 'O']
+    LIST_OF_POSSIBLE_NUMBERS = [11, 12, 13, 21, 22, 23, 31, 32, 33]
 
     def __init__(self):
         self.board = []
@@ -20,26 +20,26 @@ class Board:
     
     def players_turn(self, element):
         print(f"Player {element} turn")
-        for i in self.board:
-            print(*i, sep=" ")
+        for i in self.board: print(*i, sep=" ")
     
     def insert_values(self, element):
+        self.players_turn(element)
         if element == 'X':
             response = [int(i) for i in input("Enter row and column numbers to fix spot: ")]
             while len(response) != 2:
                 response = [int(i) for i in input("Please, enter only row and column numbers: ")]
         else:
-            response = [int(i) for i in str(random.choice(Board.list_of_possible_numbers))]
+            response = [int(i) for i in str(random.choice(Board.LIST_OF_POSSIBLE_NUMBERS))]
 
         row, line = response[0] - 1, response[1] - 1
         
-        while self.board[row][line] in Board.list_of_element:
+        while self.board[row][line] in Board.LIST_OF_ELEMENT:
             print("This location is already taken.")
             row, line = self.insert_values(element)
 
         return row, line
 
-    def is_player_win(self):
+    def is_player_winning(self):
         global win
 
         def all_same(items):
@@ -61,23 +61,22 @@ class Board:
                 except IndexError:
                     pass
             
-        if win in Board.list_of_element:
+        if win in Board.LIST_OF_ELEMENT:
             return True
 
-    def player(self):
+    def play(self):
         self.create_board()
 
-        while self.is_player_win() != True:
-            for element in Board.list_of_element:
-                self.players_turn(element)
+        while self.is_player_winning() != True:
+            for element in Board.LIST_OF_ELEMENT:
                 row, line = self.insert_values(element)
                 self.board[row][line] = element
                     
-                if self.is_player_win() == True:
+                if self.is_player_winning() == True:
                     for i in self.board: print(*i, sep=" ")                  
                     break
         
         print(f"\nCongratulations! The player {element} wins")
 
 tableau = Board()
-tableau.player()
+tableau.play()
